@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Button } from "../ui/button";
-import PhotoPreview from "./PhotoPreview";
+// import { dataURLtoBlob } from "@/helpers/camera.helper";
 
 type CameraProps = {
   photo: string | null;
@@ -27,8 +27,8 @@ const Camera = ({ photo, setPhoto }: CameraProps) => {
       const context = canvasRef.current.getContext("2d");
       context?.drawImage(videoRef.current, 0, 0, 300, 200);
       const dataURL = canvasRef.current.toDataURL("image/png");
-      stopCamera();
       setPhoto(dataURL);
+      stopCamera();
     }
   };
 
@@ -46,7 +46,7 @@ const Camera = ({ photo, setPhoto }: CameraProps) => {
   };
 
   useEffect(() => {
-    startCamera();
+      startCamera();
     return () => {
       stopCamera();
     };
@@ -54,9 +54,6 @@ const Camera = ({ photo, setPhoto }: CameraProps) => {
 
   return (
     <div className="w-3/4 mx-auto h-full flex flex-col gap-5">
-      {/* <button onClick={startCamera}>Start Camera</button>
-      <button onClick={takePhoto}>Take Photo</button>
-      <button onClick={stopCamera}>Stop Camera</button> */}
       <video ref={videoRef} className="w-full h-full" autoPlay muted></video>
       <div className="flex justify-center">
         {photo ? (

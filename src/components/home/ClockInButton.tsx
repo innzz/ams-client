@@ -1,8 +1,12 @@
 import { Button } from '../ui/button'
 
-const ClockInButton = () => {
+type ClockInButtonProps = {
+  onClick?: ()=> void,
+}
+
+const ClockInButton = ({onClick}: ClockInButtonProps) => {
   return (
-    <Button variant={"success"} size={"lg"}>Clock In</Button>
+    <Button variant={"success"} size={"lg"} onClick={onClick} >Clock In</Button>
   )
 }
 
