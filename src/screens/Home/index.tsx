@@ -9,7 +9,7 @@ const Home = () => {
   const clockContext = useContext(ClockContext);
   return (
     <section>
-      <div className="w-3/4 mt-12 mx-auto h-[80%]">
+      <div className="w-[100%] mt-12 mx-auto h-[80%] sm:w-3/4">
         {clockContext.user?.username ? <ClockOut /> : <ClockIn />}
       </div>
     </section>

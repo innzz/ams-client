@@ -14,11 +14,11 @@ export const uploadImage = async (formData: FormData) => {
 export const uploadImageToCloudinary = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "amsCloud");
-  formData.append("cloud_name", "ddgm6ub4u");
+  formData.append("upload_preset", import.meta.env.VITE_UPLOAD_PRESET);
+  formData.append("cloud_name", import.meta.env.VITE_CLOUD_NAME);
 
   try {
-    const res = await fetch("https://api.cloudinary.com/v1_1/ddgm6ub4u/image/upload",{
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/image/upload`,{
       method: "POST",
       body: formData
     });

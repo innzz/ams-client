@@ -28,7 +28,7 @@ const DataTable = ({ data, isLoading }: DataTableProps) => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 3;
+  const itemsPerPage = 5;
   
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +57,7 @@ const DataTable = ({ data, isLoading }: DataTableProps) => {
       const endDateObj = new Date(endDate);
       filtered = filtered.filter((item) => {
         const itemDate = new Date(item.checkInTime);
-        return itemDate >= startDateObj && itemDate <= endDateObj;
+        return itemDate >= startDateObj || itemDate <= endDateObj;
       });
     }
 
@@ -159,7 +159,7 @@ const DataTable = ({ data, isLoading }: DataTableProps) => {
           className={`py-2 px-4 rounded-lg focus:outline-none ${
             currentPage === 1
               ? "bg-gray-200 text-gray-500 cursor-not-allowed hover:bg-gray-300"
-              : "bg-gray-300 text-gray-700"
+              : "bg-blue-300 text-gray-700"
           }`}
         >
           Previous
@@ -174,7 +174,7 @@ const DataTable = ({ data, isLoading }: DataTableProps) => {
             indexOfLastItem >= filteredData.length ||
             currentPage === totalPageCount
               ? "bg-gray-200 text-gray-500 cursor-not-allowed hover:bg-gray-300"
-              : "bg-gray-300 text-gray-700"
+              : "bg-blue-300 text-gray-700"
           }`}
         >
           Next

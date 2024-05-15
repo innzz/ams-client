@@ -11,9 +11,10 @@ import { ClockinType } from "@/types/clock.type";
 import { useClocksData } from "@/services/swr/clock";
 
 const ClockIn = () => {
-  const { mutate} = useClocksData();
+  const { mutate } = useClocksData();
   const [username, setUsername] = useState<string>("");
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [photo, setPhoto] = useState<string | null>(null);
   const clockContext = useContext(ClockContext);
 
@@ -22,41 +23,47 @@ const ClockIn = () => {
     setIsCameraOpen(true);
   };
 
-  const clockInHandler = async() => {
-
-    //If photos is selected
-    if (photo) {
-      //convert photo path to file
-      const blob = dataURLtoBlob(photo);
-      const file = new File([blob], "captured_photo.png", {
-        type: "image/png",
-      });
-      //Upload the photo
-      // const data = await uploadImage(formData);
-      const data = await uploadImageToCloudinary(file);
-      //check if photo is successfully uploaded
-      if (data) {
-        const clockInObj:ClockinType = {
-          username,
-          checkInImage: data,
-          checkInTime: new Date()
-        }
-        const clockedIn = await clockIn(clockInObj);
-        
-        if (clockedIn.success) {
-          localStorage.setItem("user", JSON.stringify(clockedIn.data));
-          clockContext.setUser!(clockedIn.data);
-          mutate()
+  const clockInHandler = async () => {
+    try {
+      setIsLoading(true);
+      //If photos is selected
+      if (photo) {
+        //convert photo path to file
+        const blob = dataURLtoBlob(photo);
+        const file = new File([blob], "captured_photo.png", {
+          type: "image/png",
+        });
+        //Upload the photo
+        const data = await uploadImageToCloudinary(file);
+        //check if photo is successfully uploaded
+        if (data) {
+          const clockInObj: ClockinType = {
+            username,
+            checkInImage: data,
+            checkInTime: new Date(),
+          };
+          const clockedIn = await clockIn(clockInObj);
+  
+          if (clockedIn.success) {
+            localStorage.setItem("user", JSON.stringify(clockedIn.data));
+            clockContext.setUser!(clockedIn.data);
+            mutate();
+          }
         }
       }
-
+      
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+    } finally{
+      setIsLoading(false)
     }
   };
 
   //If photo is selected then show clockin option or retake a photo
   if (photo) {
     return (
-      <div className="w-[60%] mx-auto h-full bg-green-100 p-6 rounded-md">
+      <div className="w-full sm:w-[60%] mx-auto h-full bg-green-100 p-6 rounded-md">
         <div className="w-full">
           <PhotoPreview photo={photo} />
         </div>
@@ -64,8 +71,8 @@ const ClockIn = () => {
           <p className="text-[25px] font-[500]">User name: </p>
           <p className="text-[25px]">{username}</p>
         </div>
-        <div className="mt-5 flex justify-center items-center gap-7">
-          <ClockInButton onClick={clockInHandler} />
+        <div className="mt-5 flex flex-wrap justify-center items-center gap-7">
+          <ClockInButton onClick={clockInHandler} isLoading={isLoading} />
           <OpenCameraButton
             title={"Retake Photo"}
             variant={"secondary"}
@@ -91,11 +98,13 @@ const ClockIn = () => {
             <label htmlFor="username" className="text-[20px]">
               User name <span className="text-red-700">*</span>
             </label>
-            <input
-              type="text"
-              className="border-[1px] border-black h-10 px-3 rounded-md"
-              onChange={(e) => setUsername(e.target.value)}
-            />
+            <div className="w-full">
+              <input
+                type="text"
+                className="border-[1px] border-black h-10 px-3 rounded-md w-full max-w-[400px]"
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
           </div>
           <OpenCameraButton
             title={"Open Camera"}
